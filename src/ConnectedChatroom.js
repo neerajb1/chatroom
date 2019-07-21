@@ -213,6 +213,7 @@ export default class ConnectedChatroom extends Component<
         speechRecognition={this.props.speechRecognition}
         onToggleChat={this.handleToggleChat}
         onButtonClick={this.handleButtonClick}
+        userId={this.props.userId}
         onSendMessage={this.sendMessage}
         ref={this.chatroomRef}
       />

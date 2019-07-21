@@ -63,6 +63,7 @@ type ChatroomProps = {
   isOpen: boolean,
   waitingForBotResponse: boolean,
   speechRecognition: ?string,
+    userId: string,
   onButtonClick: (message: string, payload: string) => *,
   onSendMessage: (message: string) => *,
   onToggleChat: () => *
@@ -81,33 +82,60 @@ export default class Chatroom extends Component<ChatroomProps, ChatroomState> {
   chatsRef = React.createRef();
   inputRef = React.createRef();
 
-  componentDidMount() {
+  async componentDidMount() {
     this.scrollToBot();
-    navigator.geolocation.getCurrentPosition(function(position) {
-  console.log(position,"position shulaaa ji ka ");
-  // this.setState(position)
+    console.log('dvbjdsbjvbds', this.props);
+    // this.setState({userId:this.props.})
 
   // this.sendPosition(position);
+  var options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+  };
 
-  fetch(`http://182.72.208.172:5005/webhooks/rest/webhook`, {
-    method: 'post',
-    body: JSON.stringify({
-  "sender": this.props.userId,
-  "message": position
-})
-  }).then(function(response) {
-    return response.json();
-  }).then(function(data) {
-    console.log('send data:', data);
-  });
-});
+  try {
+        const coords  = await this.getCurrentPosition();
+        // cosnt { latitude, longitude } = coords;
+console.log(coords, "dshviodshiv?????????????", this);
+this.sendPosition(coords, this.props.userId);
+        // Handle coordinates
+    } catch (error) {
+        // Handle error
+        console.error(error);
+    }
+//
+// this.getCurrentPosition((position)=>{
+//   console.log('idhsiohds', this.props, position);
+//   })
+// navigator.geolocation.getCurrentPosition(success, error, options);
+
+
+//   fetch(`http://182.72.208.172:5005/webhooks/rest/webhook`, {
+//     method: 'post',
+//     body: JSON.stringify({
+//   "sender": this.props.userId,
+//   "message": position
+// })
+//   }).then(function(response) {
+//     return response.json();
+//   }).then(function(data) {
+//     console.log('send data:', data);
+//   });
   }
 
-sendPosition(position){
+
+getCurrentPosition(options = {}) {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+}
+
+sendPosition(position, userId){
   fetch(`http://182.72.208.172:5005/webhooks/rest/webhook`, {
     method: 'post',
     body: JSON.stringify({
-  "sender": "Rasa",
+  "sender": userId,
   "message": position
 })
   }).then(function(response) {
